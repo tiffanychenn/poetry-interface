@@ -1,12 +1,24 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
+import { State } from '../../reducers/rootReducer';
 
-class PoemView extends React.Component {
+interface ReduxStateProps {
+	poem: string;
+}
+
+type Props = ReduxStateProps;
+
+class PoemView extends React.Component<Props> {
 	render() {
+		const { poem } = this.props;
 		return <div>
-			there's a poem here
+			{poem}
 		</div>
 	}
 }
 
+const mapStateToProps = (state: State): ReduxStateProps => ({
+	poem: state.main.poem,
+});
 
-export default PoemView;
+export default connect(mapStateToProps)(PoemView);
