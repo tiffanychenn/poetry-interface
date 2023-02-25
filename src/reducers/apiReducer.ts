@@ -1,4 +1,4 @@
-import { APIActions, API_ACTION_NAMES, SetIsFetchingImageAction } from './../actions/apiActions';
+import { APIActions, API_ACTION_NAMES, SetIsFetchingAction } from './../actions/apiActions';
 export type FetchStatus = 'inactive' | 'fetching' | 'success' | 'failure';
 
 export interface APIState {
@@ -12,7 +12,7 @@ export const initialState: APIState = {
 export function reducer(state = initialState, action: APIActions): APIState {
 	switch (action.type) {
 		case API_ACTION_NAMES.SET_IS_FETCHING_IMAGE: {
-			const { value } = action as SetIsFetchingImageAction;
+			const { value } = action as SetIsFetchingAction;
 			return {
 				...state,
 				isFetchingImage: value,

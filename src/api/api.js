@@ -77,6 +77,10 @@ app.post('/image-gen', async (req,res) => {
             if (err) res.status(400).send("unable to save image");
         });
 
+        const imageData = {
+            imageURL: filename,
+        };
+
         res.status(200).json(
             imageData
         );

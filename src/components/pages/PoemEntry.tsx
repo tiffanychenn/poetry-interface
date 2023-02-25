@@ -2,11 +2,11 @@ import * as React from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { connect } from 'react-redux';
-import { savePoem } from '../../actions/poemActions';
+import { evaluatePoem } from '../../actions/poemActions';
 import { State } from '../../reducers/rootReducer';
 
 interface ReduxDispatchProps {
-	savePoem?: (poem: string) => void;
+	evaluatePoem?: (poem: string) => void;
 }
 
 interface ComponentState {
@@ -22,8 +22,8 @@ class PoemEntry extends React.Component<ReduxDispatchProps, ComponentState> {
 	}
 
 	render() {
-		const {savePoem} = this.props;
-		return <Form onSubmit={(event: React.FormEvent<HTMLFormElement>) => {savePoem && savePoem(this.state.poem)}}>
+		const {evaluatePoem} = this.props;
+		return <Form onSubmit={(event: React.FormEvent<HTMLFormElement>) => {evaluatePoem && evaluatePoem(this.state.poem)}}>
 				<Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
 					<Form.Label>Enter poem here</Form.Label>
 					<Form.Control as="textarea" rows={3} onInput={(e: React.FormEvent<HTMLInputElement>) => {this.setState({poem: e.currentTarget.value})}} />
@@ -35,4 +35,4 @@ class PoemEntry extends React.Component<ReduxDispatchProps, ComponentState> {
 
 const mapStateToProps = (state: State): any => ({});
 
-export default connect(mapStateToProps, {savePoem})(PoemEntry);
+export default connect(mapStateToProps, {evaluatePoem})(PoemEntry);
