@@ -12,7 +12,7 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
  
-// Take a port 5000 for running server.
+// Take a port 4000 for running server.
 const PORT = 4000;
 
 app.get('/',(req,res) => {
@@ -24,6 +24,44 @@ app.get('/',(req,res) => {
 app.use('/client', express.static(path.join(__dirname, '../../dist/')));
 app.use('/client/assets', express.static(path.join(__dirname, '../../assets/')));
 app.use('/client/data', express.static(path.join(__dirname, '../../data/')));
+
+app.post('/keywords', async (req, res) => {
+    try {
+        const poem = req.body.poem;
+        const num = req.body.num_keywords;
+        console.log(`Generating ${num} keywords for: ${poem}`);
+        const keywords = await getGPT3Keywords(poem, num);
+        res.status(200).json(
+            {keywords: keywords.split("\n").filter((value) => value).map((value) => value.split(" ")[1])}
+        );
+    }
+    catch (err) {
+        console.log("Error in generating keywords:");
+        console.log(err);
+        res.status(400).json(
+            {error: "could not get keywords"}
+        );
+    }
+});
+
+app.post('/emotions', async (req, res) => {
+    try {
+        const poem = req.body.poem;
+        const num = req.body.num_emotions;
+        console.log(`Generating ${num} emotions for: ${poem}`);
+        const emotions = await getGPT3Emotions(poem, num);
+        res.status(200).json(
+            {emotions: emotions.split("\n").filter((value) => value).map((value) => value.split(" ")[1])}
+        );
+    }
+    catch (err) {
+        console.log("Error in generating emotions:");
+        console.log(err);
+        res.status(400).json(
+            {error: "could not get emotions"}
+        );
+    }
+});
 
 app.post('/image-gen', async (req,res) => {
     try {
@@ -130,6 +168,35 @@ async function getDALLEVariation(path) {
     );
     const b64_json = response.data.data[0].b64_json;
     return b64_json;
+}
+
+async function getGPT3Keywords(poem, num_keywords) {
+    const response = await openai.createCompletion({
+        model: "text-davinci-003",
+        prompt: `Find ${num_keywords} keywords for: ${poem}`,
+        temperature: 0,
+        max_tokens: 2048,
+        top_p: 1,
+        frequency_penalty: 0,
+        presence_penalty: 0,
+    });
+    // console.log(response.data.choices);
+    const text = response.data.choices[0].text;
+    return text;
+}
+
+async function getGPT3Emotions(poem, num_emotions) {
+    const response = await openai.createCompletion({
+        model: "text-davinci-003",
+        prompt: `Find ${num_emotions} emotions for: ${poem}`,
+        temperature: 0,
+        max_tokens: 2048,
+        top_p: 1,
+        frequency_penalty: 0,
+        presence_penalty: 0,
+    });
+    const text = response.data.choices[0].text;
+    return text;
 }
 
 // text soaper
