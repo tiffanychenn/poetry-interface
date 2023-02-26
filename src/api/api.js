@@ -23,7 +23,7 @@ app.get('/',(req,res) => {
 
 app.use('/client', express.static(path.join(__dirname, '../../dist/')));
 app.use('/client/assets', express.static(path.join(__dirname, '../../assets/')));
-app.use('/client/data', express.static(path.join(__dirname, '../../data/')));
+app.use('/client/pictures', express.static(path.join(__dirname, '../../pictures/')));
 
 app.post('/keywords', async (req, res) => {
     try {
@@ -71,7 +71,7 @@ app.post('/image-gen', async (req,res) => {
         const buffer = Buffer.from(image, "base64");
         // Using datetime to ensure that no two images have the same name if you redo an image.
         const filename = prompt + "-" + Date.now() + ".png";
-        const filepath = "../../data/";
+        const filepath = "../../pictures/";
         fs.writeFile(filepath + filename, buffer, (err) => {
             // In case of a error throw err.
             if (err) res.status(400).send("unable to save image");
@@ -99,13 +99,13 @@ app.post('/image-variation', async (req, res) => {
     try {
         const path = req.body.pathToVary;
         console.log(`Generating variation of file: ${path}`);
-        const image = await getDALLEVariation("../../data/" + path);
+        const image = await getDALLEVariation("../../pictures/" + path);
 
         const experimentId = req.body.id;
         const sectionIndex = req.body.sectionIndex;
         const buffer = Buffer.from(image, "base64");
         const filename = experimentId + "-" + Date.now() + "-var-" + sectionIndex + ".png";
-        const filepath = "../../data/" + experimentId + "/";
+        const filepath = "../../pictures/" + experimentId + "/";
         fs.writeFile(filepath + filename, buffer, (err) => {
             if (err) res.status(400).send("unable to save image variation");
         });
@@ -177,7 +177,7 @@ async function getDALLEVariation(path) {
 async function getGPT3Keywords(poem, num_keywords) {
     const response = await openai.createCompletion({
         model: "text-davinci-003",
-        prompt: `Find ${num_keywords} keywords for: ${poem}`,
+        prompt: `Give me ${num_keywords} keywords associated with: ${poem}`,
         temperature: 0,
         max_tokens: 2048,
         top_p: 1,
@@ -192,7 +192,7 @@ async function getGPT3Keywords(poem, num_keywords) {
 async function getGPT3Emotions(poem, num_emotions) {
     const response = await openai.createCompletion({
         model: "text-davinci-003",
-        prompt: `Find ${num_emotions} emotions for: ${poem}`,
+        prompt: `Give me ${num_emotions} emotions associated with: ${poem}`,
         temperature: 0,
         max_tokens: 2048,
         top_p: 1,
