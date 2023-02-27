@@ -2,3 +2,4 @@
 **/.env
 /pictures
 /dist
+/venv-poetry-api
