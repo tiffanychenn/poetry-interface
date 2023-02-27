@@ -31,8 +31,9 @@ def get_keywords():
     req_json = request.get_json()
     poem = req_json["poem"]
     num_keywords = req_json["num_keywords"]
+    evaluate_concreteness = req_json["evaluate_concreteness"] if "evaluate_concreteness" in req_json else False
     print(f"Generating {num_keywords} keywords for: {poem}")
-    keywords = getGPT3Keywords(poem, num_keywords)
+    keywords = getGPT3Keywords(poem, num_keywords, evaluate_concreteness)
     return {"keywords": keywords}
 
 @app.route('/emotions', methods=['POST'])
@@ -123,10 +124,10 @@ def getDALLEImage(prompt):
 #     return b64_json;
 # } we'll do variations when we get there
 
-def getGPT3Keywords(poem, num_keywords):
+def getGPT3Keywords(poem, num_keywords, evaluate_concreteness):
     response = openai.Completion.create(
         model="text-davinci-003",
-        prompt=f"Give me {num_keywords} keywords associated with: {poem}",
+        prompt=f"Give me {2 * num_keywords} keywords associated with: {poem}",
         temperature=0,
         max_tokens=2048,
         top_p=1,
@@ -134,7 +135,10 @@ def getGPT3Keywords(poem, num_keywords):
         presence_penalty=0,
     )
     text = response["choices"][0]["text"]
-    return getWordsFromResponse(text)
+    words = getWordsFromResponse(text)
+    if evaluate_concreteness:
+        words = list(filter(lambda v: v.lower() in CONCRETENESS_RANKINGS and CONCRETENESS_RANKINGS[v.lower()]["Conc.M"] >= 2.5, words))[:num_keywords]
+    return words
 
 def getGPT3Emotions(poem, num_emotions):
     response = openai.Completion.create(
@@ -161,7 +165,9 @@ def textSoaper(text):
 
 # other helper functions
 def getWordsFromResponse(text): 
-    return list(map(lambda v: v.split(" ")[1], filter(lambda v: len(v), text.split("\n"))))
+    if len(re.findall(r'\d+', text)):
+        return list(map(lambda v: v.split(" ")[1], filter(lambda v: len(v), text.split("\n"))))
+    return text.split(", ")
 
 
 if __name__ == "__main__":

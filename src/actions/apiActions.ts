@@ -12,7 +12,7 @@ const PORT = 5000;
 export const API_BASE_URL = `http://localhost:${PORT}`;
 
 const NUM_KEYWORDS = 5;
-const NUM_EMOTIONS = 2;
+const NUM_EMOTIONS = 3;
 
 export interface SetIsFetchingAction {
 	type: typeof API_ACTION_NAMES.SET_IS_FETCHING_IMAGE;
