@@ -32,6 +32,8 @@ export function evaluatePoem(p: string): RootThunkAction {
 		const style = state.main.style;
 
 		dispatch(setPoem(p));
+
+		// grab main poem picture
 		dispatch(setIsFetchingImage('fetching'));
 		const keywords = await generateKeywords(p);
 		const emotions = await generateEmotions(p);

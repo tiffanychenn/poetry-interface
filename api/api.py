@@ -59,6 +59,22 @@ def generate_image():
 
     return {"imageURL": filename}
 
+# @app.route('/divide-poem', methods=['POST'])
+# def divide_poem():
+#     req_json = request.get_json()
+#     poem = req_json['poem']
+#     stanzas = re.split(r"\n[\n]+", poem)
+#     lines = []
+#     for stanza in stanzas:
+#         lines.append(stanza.split("\n"))
+#     new_lines = []
+#     for stanza in lines:
+#         for line in stanza:
+#             words = line.split(" ")
+#             words = list(filter(lambda v: v.lower() in CONCRETENESS_RANKINGS and CONCRETENESS_RANKINGS[v.lower()]["Conc.M"] > 2.5, words))
+#             new_lines.append(words)
+#     return {'lines': new_lines}
+
 # // need to fuss with this later
 # app.post('/image-variation', async (req, res) => {
 #     try {
@@ -127,7 +143,7 @@ def getDALLEImage(prompt):
 def getGPT3Keywords(poem, num_keywords, evaluate_concreteness):
     response = openai.Completion.create(
         model="text-davinci-003",
-        prompt=f"Give me {2 * num_keywords} keywords associated with: {poem}",
+        prompt=f"Give me {num_keywords} keywords for: {poem}",
         temperature=0,
         max_tokens=2048,
         top_p=1,
@@ -136,14 +152,14 @@ def getGPT3Keywords(poem, num_keywords, evaluate_concreteness):
     )
     text = response["choices"][0]["text"]
     words = getWordsFromResponse(text)
-    if evaluate_concreteness:
-        words = list(filter(lambda v: v.lower() in CONCRETENESS_RANKINGS and CONCRETENESS_RANKINGS[v.lower()]["Conc.M"] >= 2.5, words))[:num_keywords]
+    # if evaluate_concreteness:
+    #     words = list(filter(lambda v: v.lower() in CONCRETENESS_RANKINGS and CONCRETENESS_RANKINGS[v.lower()]["Conc.M"] >= 2.5, words))
     return words
 
 def getGPT3Emotions(poem, num_emotions):
     response = openai.Completion.create(
         model="text-davinci-003",
-        prompt=f"Give me {num_emotions} emotions associated with: {poem}",
+        prompt=f"Give me {num_emotions} emotions for: {poem}",
         temperature=0,
         max_tokens=2048,
         top_p=1,
@@ -167,7 +183,7 @@ def textSoaper(text):
 def getWordsFromResponse(text): 
     if len(re.findall(r'\d+', text)):
         return list(map(lambda v: v.split(" ")[1], filter(lambda v: len(v), text.split("\n"))))
-    return text.split(", ")
+    return text.split("\n")[1].split(", ")
 
 
 if __name__ == "__main__":

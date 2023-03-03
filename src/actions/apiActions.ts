@@ -11,7 +11,7 @@ export const API_ACTION_NAMES = {
 const PORT = 5000;
 export const API_BASE_URL = `http://localhost:${PORT}`;
 
-const NUM_KEYWORDS = 5;
+const NUM_KEYWORDS = 6;
 const NUM_EMOTIONS = 3;
 
 export interface SetIsFetchingAction {
