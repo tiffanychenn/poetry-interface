@@ -9,8 +9,11 @@ import time
 
 app = Flask(__name__)
 
-with open("./concretenessRankings.json") as file:
-    CONCRETENESS_RANKINGS = json.load(file)
+with open("./concreteness_word_rankings.json") as file:
+    CONCRETENESS_WORD_RANKINGS = json.load(file)
+
+with open("./concreteness_phrase_rankings.json") as file:
+    CONCRETENESS_PHRASE_RANKINGS = json.load(file)
 
 load_dotenv()
 
@@ -44,6 +47,26 @@ def get_emotions():
     print(f"Generating {num_emotions} emotions for: {poem}")
     emotions = getGPT3Emotions(poem, num_emotions)
     return {"emotions": emotions }
+
+@app.route('/concreteness', methods=["POST"])
+def get_concreteness():
+    req_json = request.get_json()
+    poem = req_json["poem"]
+    concreteness_limit = float(req_json["limit"])
+    words = []
+    phrases = []
+    for word in CONCRETENESS_WORD_RANKINGS:
+        if CONCRETENESS_WORD_RANKINGS[word]["Conc.M"] > concreteness_limit and re.search(r'\s' + word + r'\s', poem):
+            words.append(word)
+    for phrase in CONCRETENESS_PHRASE_RANKINGS:
+        if CONCRETENESS_PHRASE_RANKINGS[phrase]["Mean_C"] != "NA" and CONCRETENESS_PHRASE_RANKINGS[phrase]["Mean_C"] > concreteness_limit and re.search(r'\s' + phrase + r'\s', poem):
+            phrases.append(phrase)
+    return {"words": words, "phrases": phrases}
+    
+
+@app.route('/imageability', methods=['POST'])
+def get_imageability():
+    return {'imageability': 1}
 
 @app.route('/image-gen', methods=['POST'])
 def generate_image():
