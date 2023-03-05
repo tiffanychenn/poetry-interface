@@ -1,6 +1,12 @@
 # poetry-interface
 heehee my new meng project
 
+## fun things about sonnets!
+
+- Fourteen lines, iambic pentameter (assumptions)
+- (potentially) some kind of rhyme schemes?
+- can separate in stanzas based on rhyme schemes, or first 8 and last 6... can do a lot potentially with not having to automate what exactly we want to illustrate
+
 ## measures
 
 Aim is having different choices - letting users choose the variations for how these images are generated
