@@ -9,11 +9,14 @@ import time
 
 app = Flask(__name__)
 
-with open("./concreteness_word_rankings.json") as file:
+with open("./data/concreteness/concreteness_word_rankings.json") as file:
     CONCRETENESS_WORD_RANKINGS = json.load(file)
 
-with open("./concreteness_phrase_rankings.json") as file:
+with open("./data/concreteness/concreteness_phrase_rankings.json") as file:
     CONCRETENESS_PHRASE_RANKINGS = json.load(file)
+
+with open("./data/imageability/imageability_rankings.json") as file:
+    IMAGEABILITY_RANKINGS = json.load(file)
 
 load_dotenv()
 
@@ -63,10 +66,23 @@ def get_concreteness():
             phrases.append(phrase)
     return {"words": words, "phrases": phrases}
     
-
 @app.route('/imageability', methods=['POST'])
 def get_imageability():
-    return {'imageability': 1}
+    req_json = request.get_json()
+    poem = req_json["poem"]
+    imageability_limit = int(req_json["limit"])
+    visual_words = set()
+    phonetic_words = set()
+    textual_words = set()
+    for word in poem.split():
+        if word in IMAGEABILITY_RANKINGS:
+            if IMAGEABILITY_RANKINGS[word]["visual"] > imageability_limit:
+                visual_words.add(word)
+            if IMAGEABILITY_RANKINGS[word]["phonetic"] > imageability_limit:
+                phonetic_words.add(word)
+            if IMAGEABILITY_RANKINGS[word]["textual"] > imageability_limit:
+                textual_words.add(word)
+    return {"visual": list(visual_words), "phonetic": list(phonetic_words), "textual": list(textual_words)}
 
 @app.route('/image-gen', methods=['POST'])
 def generate_image():
