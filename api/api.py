@@ -6,6 +6,7 @@ import openai
 import re
 import base64
 import time
+import spacy
 
 app = Flask(__name__)
 
@@ -24,6 +25,8 @@ CWD = os.getcwd()
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
+nlp = spacy.load("en_core_web_md")
+
 @app.route('/', methods=['GET'])
 def index():
     return "working"
@@ -31,6 +34,13 @@ def index():
 @app.route('/client/pictures/<filename>', methods=['GET'])
 def get_picture(filename):
     return send_from_directory(os.path.join(CWD, '../pictures'), filename, mimetype='image/png')
+
+@app.route('/named_entities', methods=["POST"])
+def get_named_entities():
+    req_json = request.get_json()
+    poem = req_json["poem"] 
+    doc = nlp(poem)
+    return {"entities": [[ent.text, ent.label_] for ent in doc.ents]}
 
 @app.route('/keywords', methods=['POST'])
 def get_keywords():

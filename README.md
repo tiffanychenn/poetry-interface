@@ -23,3 +23,4 @@ Types of texts:
   - Imageability ratings come from [here](https://github.com/mkasu/imageabilitycorpus).
 - POS parsing / named entities
 - inputting full line
+- frequency of words
