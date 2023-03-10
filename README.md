@@ -6,6 +6,7 @@ heehee my new meng project
 - Fourteen lines, iambic pentameter (assumptions)
 - (potentially) some kind of rhyme schemes?
 - can separate in stanzas based on rhyme schemes, or first 8 and last 6... can do a lot potentially with not having to automate what exactly we want to illustrate
+- metaphors / landscape
 
 also with lines short enough, we can definitely just input the lines into DALLE and see what happens
 
@@ -24,3 +25,5 @@ Types of texts:
 - POS parsing / named entities
 - inputting full line
 - frequency of words
+
+I like this concept of needing two images: what is literally happening and what is metaphorically happening.

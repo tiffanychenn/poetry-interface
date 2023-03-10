@@ -7,6 +7,7 @@ import re
 import base64
 import time
 import spacy
+from collections import Counter
 
 app = Flask(__name__)
 
@@ -41,6 +42,18 @@ def get_named_entities():
     poem = req_json["poem"] 
     doc = nlp(poem)
     return {"entities": [[ent.text, ent.label_] for ent in doc.ents]}
+
+@app.route('/most_common_words', methods=["POST"])
+def get_most_common_words():
+    req_json = request.get_json()
+    poem = req_json["poem"] 
+    num = req_json["num_words"]
+    doc = nlp(poem)
+    words = [token.text
+         for token in doc
+         if not token.is_stop and not token.is_punct and not token.is_space]
+    word_freq = Counter(words)
+    return {"most_common": word_freq.most_common(num)}
 
 @app.route('/keywords', methods=['POST'])
 def get_keywords():
