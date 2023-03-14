@@ -14,7 +14,6 @@ interface ReduxStateProps {
 type Props = ReduxStateProps;
 
 class ParticipantApp extends React.Component<Props> {
-
 	render() {
 		const { poem } = this.props;
 		return <div style={{position: 'relative', padding: '5vh'}}>

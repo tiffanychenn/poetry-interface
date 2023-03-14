@@ -1,11 +1,14 @@
 import { RootThunkAction } from "../reducers/rootReducer";
+import { makePrompt } from "../utils/utils";
 import { generateEmotions, generateImage, generateKeywords, setIsFetchingImage } from "./apiActions";
 
 export const GAME_ACTION_NAMES = {
 	SET_POEM: 'SET_POEM',
 	SET_ERROR: 'SET_ERROR',
 	SET_IMAGE: 'SET_IMAGE',
-	SET_STYLE: 'SET_STYLE'
+	SET_STYLE: 'SET_STYLE',
+	SET_KEYWORDS: 'SET_KEYWORDS',
+	SET_EMOTIONS: 'SET_EMOTIONS',
 };
 
 export interface SetPoemAction {
@@ -37,7 +40,9 @@ export function evaluatePoem(p: string): RootThunkAction {
 		dispatch(setIsFetchingImage('fetching'));
 		const keywords = await generateKeywords(p);
 		const emotions = await generateEmotions(p);
-		const prompt = "picture of " + keywords.join(", ") + " with feelings of " + emotions.join(", ") + " in the style of " + style;
+		dispatch(setKeywords(keywords));
+		dispatch(setEmotions(emotions));
+		const prompt = makePrompt(keywords, emotions, style);
 
 		console.log(prompt);
 		dispatch(generateImage(p, prompt));
@@ -75,10 +80,55 @@ function setStyle(style: string): SetStyleAction {
 }
 
 export function saveStyle(style: string): RootThunkAction {
-	return async (dispatch, _) => {
+	return async (dispatch, getState) => {
+		const state = getState();
+		const emotions = state.main.emotions;
+		const keywords = state.main.keywords;
+		const poem = state.main.poem;
 		dispatch(setStyle(style));
+
+		const prompt = makePrompt([...keywords], [...emotions], style);
+		console.log(prompt);
+		dispatch(generateImage(poem, prompt));
 	};
 }
+
+export interface SetKeywordsAction {
+	type: typeof GAME_ACTION_NAMES.SET_KEYWORDS;
+	value: string[];
+}
+
+function setKeywords(keywords: string[]): SetKeywordsAction {
+	return {
+		type: GAME_ACTION_NAMES.SET_KEYWORDS,
+		value: keywords,
+	};
+}
+
+export function saveKeywords(keywords: string[]): RootThunkAction {
+	return async (dispatch, _) => {
+		dispatch(setKeywords(keywords));
+	};
+}
+
+export interface SetEmotionsAction {
+	type: typeof GAME_ACTION_NAMES.SET_EMOTIONS;
+	value: string[];
+}
+
+function setEmotions(emotions: string[]): SetEmotionsAction {
+	return {
+		type: GAME_ACTION_NAMES.SET_EMOTIONS,
+		value: emotions,
+	};
+}
+
+export function saveEmotions(emotions: string[]): RootThunkAction {
+	return async (dispatch, _) => {
+		dispatch(setEmotions(emotions));
+	};
+}
+
 
 export interface SetImageAction {
 	type: typeof GAME_ACTION_NAMES.SET_IMAGE;
@@ -100,4 +150,4 @@ export function saveImage(prompt: string, path: string): RootThunkAction {
 	};
 }
 
-export type PoemActions = SetPoemAction | SetErrorAction | SetImageAction;
+export type PoemActions = SetPoemAction | SetErrorAction | SetImageAction | SetStyleAction | SetKeywordsAction | SetEmotionsAction;

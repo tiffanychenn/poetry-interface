@@ -121,7 +121,7 @@ def generate_image():
 
     return {"imageURL": filename}
 
-# @app.route('/divide-poem', methods=['POST'])
+# @app.route('/split-sonnet', methods=['POST'])
 # def divide_poem():
 #     req_json = request.get_json()
 #     poem = req_json['poem']

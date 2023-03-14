@@ -13,3 +13,7 @@ export function makeError(msg: string) {
 	saveError(msg);
 	return new Error(msg);
 }
+
+export function makePrompt(keywords: string[], emotions: string[], style: string) {
+	return "picture of " + keywords.join(", ") + " with feelings of " + emotions.join(", ") + " in the style of " + style;
+}

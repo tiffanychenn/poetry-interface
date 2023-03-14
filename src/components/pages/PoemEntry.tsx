@@ -23,10 +23,10 @@ class PoemEntry extends React.Component<ReduxDispatchProps, ComponentState> {
 
 	render() {
 		const {evaluatePoem} = this.props;
-		return <Form onSubmit={(event: React.FormEvent<HTMLFormElement>) => {evaluatePoem && evaluatePoem(this.state.poem)}}>
+		return <Form onSubmit={() => {evaluatePoem && evaluatePoem(this.state.poem)}}>
 				<Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-					<Form.Label>Enter poem here</Form.Label>
-					<Form.Control as="textarea" rows={3} onInput={(e: React.FormEvent<HTMLInputElement>) => {this.setState({poem: e.currentTarget.value})}} />
+					<Form.Label>Enter sonnet here</Form.Label>
+					<Form.Control as="textarea" rows={14} onInput={(e: React.FormEvent<HTMLInputElement>) => {this.setState({poem: e.currentTarget.value})}} />
 				</Form.Group>
 				<Button type="submit">Submit</Button>
 			</Form>;
