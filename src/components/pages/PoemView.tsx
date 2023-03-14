@@ -18,6 +18,7 @@ interface ReduxStateProps {
 	poem: string;
 	style: string;
 	isFetchingImage: FetchStatus,
+	isFetchingPoem: FetchStatus,
 	images: {[key: string]: string},
 	saveStyle?: (style: string) => void;
 }
@@ -26,13 +27,13 @@ type Props = ReduxStateProps;
 
 class PoemView extends React.Component<Props> {
 	render() {
-		const { poem, isFetchingImage, images, style, saveStyle } = this.props;
+		const { poem, isFetchingImage, isFetchingPoem, images, style, saveStyle } = this.props;
 
 		return <Container>
 		<Row style={{"height": "700px"}}>
 		  <Col style={{"whiteSpace": "pre-wrap", "margin": "auto"}}>
 			{
-				isFetchingImage === 'fetching' ? <>
+				isFetchingPoem === 'fetching' ? <>
 					<Placeholder as="p" animation="wave"> 
 						<Placeholder xs={10} />
 						<Placeholder xs={10} />
@@ -80,6 +81,7 @@ const mapStateToProps = (state: State): ReduxStateProps => ({
 	poem: state.main.poem,
 	style: state.main.style,
 	isFetchingImage: state.api.isFetchingImage,
+	isFetchingPoem: state.api.isFetchingPoem,
 	images: state.main.images,
 });
 

@@ -2,10 +2,11 @@ import { DEBUG_MODE } from "../components/App/App";
 import { FetchStatus } from "../reducers/apiReducer";
 import { RootThunkAction } from "../reducers/rootReducer";
 import { makeError } from "../utils/utils";
-import { saveError, saveImage, setImage } from './poemActions';
+import { setImage } from './poemActions';
 
 export const API_ACTION_NAMES = {
 	SET_IS_FETCHING_IMAGE: 'SET_IS_FETCHING_IMAGE',
+	SET_IS_FETCHING_POEM: 'SET_IS_FETCHING_POEM',
 };
 
 const PORT = 5000;
@@ -14,14 +15,26 @@ export const API_BASE_URL = `http://localhost:${PORT}`;
 const NUM_KEYWORDS = 6;
 const NUM_EMOTIONS = 3;
 
-export interface SetIsFetchingAction {
+export interface SetIsFetchingImageAction {
 	type: typeof API_ACTION_NAMES.SET_IS_FETCHING_IMAGE;
 	value: FetchStatus;
 }
 
-export function setIsFetchingImage(value: FetchStatus): SetIsFetchingAction {
+export function setIsFetchingImage(value: FetchStatus): SetIsFetchingImageAction {
 	return {
 		type: API_ACTION_NAMES.SET_IS_FETCHING_IMAGE,
+		value,
+	};
+}
+
+export interface SetIsFetchingPoemAction {
+	type: typeof API_ACTION_NAMES.SET_IS_FETCHING_POEM;
+	value: FetchStatus;
+}
+
+export function setIsFetchingPoem(value: FetchStatus): SetIsFetchingPoemAction {
+	return {
+		type: API_ACTION_NAMES.SET_IS_FETCHING_POEM,
 		value,
 	};
 }
@@ -103,6 +116,7 @@ export function generateImage(poem: string, prompt: string): RootThunkAction {
 			console.log("generateImage received successful response from API; potentially delaying state propagation.\nResponse: " + returnedImgPath);
 			dispatch(setImage(poem, returnedImgPath));
 			dispatch(setIsFetchingImage('success'));
+			dispatch(setIsFetchingPoem('success'));
 		}).catch(reason => {
 			throw makeError("API failed to generate image for prompt: " + prompt + "\nReason: " + reason);
 		});
@@ -157,4 +171,4 @@ export async function generateEmotions(poem: string): Promise<string[]> {
 	});
 }
 
-export type APIActions = SetIsFetchingAction;
+export type APIActions = SetIsFetchingImageAction | SetIsFetchingPoemAction;

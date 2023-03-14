@@ -1,6 +1,6 @@
 import { RootThunkAction } from "../reducers/rootReducer";
 import { makePrompt } from "../utils/utils";
-import { generateEmotions, generateImage, generateKeywords, setIsFetchingImage } from "./apiActions";
+import { generateEmotions, generateImage, generateKeywords, setIsFetchingImage, setIsFetchingPoem } from "./apiActions";
 
 export const GAME_ACTION_NAMES = {
 	SET_POEM: 'SET_POEM',
@@ -38,6 +38,7 @@ export function evaluatePoem(p: string): RootThunkAction {
 
 		// grab main poem picture
 		dispatch(setIsFetchingImage('fetching'));
+		dispatch(setIsFetchingPoem('fetching'));
 		const keywords = await generateKeywords(p);
 		const emotions = await generateEmotions(p);
 		dispatch(setKeywords(keywords));
