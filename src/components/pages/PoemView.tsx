@@ -54,8 +54,8 @@ class PoemView extends React.Component<Props> {
 		  </Col>
 		  <Col style={{"whiteSpace": "pre-wrap", "margin": "auto"}}>
 		  	{
-				isFetchingImage === 'fetching' ? <p>
-					<Spinner animation="border" as="span" />
+				isFetchingImage === 'fetching' ? <p className="text-center">
+					<Spinner animation="border" />
 					<span className="visually-hidden">Loading...</span>
 				</p> : (poem && images && images[poem] && <Image fluid src={imagePathToUrl(images[poem])} />)
 			}
