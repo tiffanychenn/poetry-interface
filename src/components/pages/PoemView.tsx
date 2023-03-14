@@ -8,6 +8,7 @@ import Spinner from 'react-bootstrap/Spinner';
 import Image from 'react-bootstrap/Image';
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
+import Placeholder from 'react-bootstrap/Placeholder';
 import { FetchStatus } from '../../reducers/apiReducer';
 import { imagePathToUrl } from '../../utils/utils';
 import { ART_STYLES } from '../../utils/constants';
@@ -27,22 +28,51 @@ class PoemView extends React.Component<Props> {
 	render() {
 		const { poem, isFetchingImage, images, style, saveStyle } = this.props;
 
-		return isFetchingImage === 'fetching' ? <Spinner animation="border"/> : 
-			<Container>
-				<Row>
-					<Col style={{"whiteSpace": "pre-wrap"}}>{poem}</Col>
-					<Col>{(poem && images && images[poem] && <Image fluid src={imagePathToUrl(images[poem])} />)}</Col>
-				</Row>
-				<Row>
-					<Col style={{"whiteSpace": "pre-wrap"}}>
-						<DropdownButton id="dropdown-basic-button" title="Choose style">
-							{
-								ART_STYLES.map((s: string) => <Dropdown.Item active={style === s} onClick={() => {saveStyle && saveStyle(s)}}>{s}</Dropdown.Item>)
-							}
-						</DropdownButton>
-					</Col>
-				</Row>
-			</Container>
+		return <Container>
+		<Row style={{"height": "700px"}}>
+		  <Col style={{"whiteSpace": "pre-wrap", "margin": "auto"}}>
+			{
+				isFetchingImage === 'fetching' ? <>
+					<Placeholder as="p" animation="wave"> 
+						<Placeholder xs={10} />
+						<Placeholder xs={10} />
+						<Placeholder xs={10} />
+						<Placeholder xs={10} />
+						<Placeholder xs={10} />
+						<Placeholder xs={10} />
+						<Placeholder xs={10} />
+						<Placeholder xs={10} />
+						<Placeholder xs={10} />
+						<Placeholder xs={10} />
+						<Placeholder xs={10} />
+						<Placeholder xs={10} />
+						<Placeholder xs={10} />
+						<Placeholder xs={10} />
+					</Placeholder>
+				</> : poem
+			}
+		  </Col>
+		  <Col style={{"whiteSpace": "pre-wrap", "margin": "auto"}}>
+		  	{
+				isFetchingImage === 'fetching' ? <p>
+					<Spinner animation="border" as="span" />
+					<span className="visually-hidden">Loading...</span>
+				</p> : (poem && images && images[poem] && <Image fluid src={imagePathToUrl(images[poem])} />)
+			}
+		  </Col>
+		</Row>
+		{
+			isFetchingImage !== 'fetching' && <Row>
+				<Col>
+					<DropdownButton id="dropdown-basic-button" title="Choose style">
+						{
+							ART_STYLES.map((s: string) => <Dropdown.Item active={style === s} onClick={() => {saveStyle && saveStyle(s)}}>{s}</Dropdown.Item>)
+						}
+					</DropdownButton>
+				</Col>
+			</Row>
+		}
+	  </Container>
 	}
 }
 
